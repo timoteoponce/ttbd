@@ -2,6 +2,7 @@ package com.timoteoponce.ttdb;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,13 +23,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class AppRepository {
 
 	private static final Logger log = LoggerFactory.getLogger(AppRepository.class);
+	private Path dataPath = Paths.get("./data.json");
 
 	private Collection<Activity> readStoredActivities() {
-		var path = Paths.get("./data.json");
-		if (Files.exists(path)) {
+		if (Files.exists(dataPath)) {
 			var mapper = mapper();
 			try {
-				return new ArrayList<>(Arrays.asList(mapper.readValue(path.toFile(), Activity[].class)));
+				return new ArrayList<>(Arrays.asList(mapper.readValue(dataPath.toFile(), Activity[].class)));
 			} catch (Exception e) {
 				log.warn(e.getMessage());
 			}
@@ -44,11 +45,10 @@ public class AppRepository {
 	}
 
 	private void writeStoredActivities(Collection<Activity> items) {
-		var path = Paths.get("./data.json");
 		var mapper = mapper();
 		var writer = mapper.writer();
 		try {
-			writer.writeValue(path.toFile(), items);
+			writer.writeValue(dataPath.toFile(), items);
 		} catch (Exception e) {
 			log.warn(e.getMessage());
 		}
@@ -72,9 +72,17 @@ public class AppRepository {
 
 	public void reset() {
 		try {
-			Files.deleteIfExists(Paths.get("./data.json"));
+			Files.deleteIfExists(dataPath);
 		} catch (IOException e) {
 			log.warn(e.getMessage());
+		}
+	}
+
+	public String toJson(Object value) {
+		try {
+			return mapper().writeValueAsString(value);
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
 		}
 	}
 

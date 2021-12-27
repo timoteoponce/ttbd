@@ -6,12 +6,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -22,6 +27,8 @@ class RestTests {
 
 	@Autowired
 	private AppRepository repository;
+	
+	private final LocalDate today = LocalDate.now();
 
 	@Test
 	public void testGetActivitiesWhenEmpty() throws Exception {
@@ -34,20 +41,24 @@ class RestTests {
 		repository.reset();
 
 		mvc.perform(post("/activities/jogging").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"date\": \"2021-12-27\", \"time\": 10}")).andExpect(status().isOk());
+				.content(activity(today,10))).andExpect(status().isOk());
 
 		mvc.perform(get("/activities")).andExpect(status().isOk()).andExpect(content().json(
 				"[{\"timeframes\":{\"monthly\":{\"previous\":0,\"current\":10},\"weekly\":{\"previous\":0,\"current\":10},\"daily\":{\"previous\":0,\"current\":10}},\"title\":\"jogging\"}]"));
 	}
 	
+	private String activity(LocalDate date, int time) {		
+		return repository.toJson(Map.of("date", date, "time", time));
+	}
+
 	@Test
 	public void testPostAndGetActivityWithPastDayData() throws Exception {
 		repository.reset();
 
 		mvc.perform(post("/activities/jogging").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"date\": \"2021-12-27\", \"time\": 10}")).andExpect(status().isOk());
+				.content(activity(today,10))).andExpect(status().isOk());
 		mvc.perform(put("/activities/jogging").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"date\": \"2021-12-26\", \"time\": 10}")).andExpect(status().isOk());
+				.content(activity(today.minusDays(1),10))).andExpect(status().isOk());
 
 		mvc.perform(get("/activities")).andExpect(status().isOk()).andExpect(content().json(
 				"[{\"timeframes\":{\"daily\":{\"previous\":10,\"current\":10},\"monthly\":{\"previous\":0,\"current\":20},\"weekly\":{\"previous\":10,\"current\":10}},\"title\":\"jogging\"}]"));

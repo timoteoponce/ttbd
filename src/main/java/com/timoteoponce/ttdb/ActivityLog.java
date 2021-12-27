@@ -19,7 +19,6 @@ public class ActivityLog {
 	}
 
 	public boolean hasSameDay(LocalDate other) {
-		System.out.printf("hasSameDay %s == %s \n", timestamp.getDayOfYear() , other.getDayOfYear());
 		return timestamp.getDayOfYear() == other.getDayOfYear();
 	}
 
@@ -28,7 +27,6 @@ public class ActivityLog {
 	}
 
 	public boolean hasSameMonth(LocalDate other) {
-		System.out.printf("hasSameMonth %s == %s \n", timestamp.getMonthValue() , other.getMonthValue());
 		return timestamp.getMonthValue() == other.getMonthValue();
 	}
 
