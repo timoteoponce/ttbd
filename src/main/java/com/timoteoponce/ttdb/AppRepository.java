@@ -19,6 +19,12 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+/**
+ * 
+ * I/O component that allows reading and writing activities into a persistent state, in this case using a simple JSON file
+ * @author timoteo
+ *
+ */
 @Component
 public class AppRepository {
 

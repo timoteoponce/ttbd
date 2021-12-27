@@ -6,6 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * Utility class used for adapting the stored-activity data into response data structures.
+ * 
+ * @author timoteo
+ *
+ */
 public class ActivityResponse {
 
 	public static Map<String, Object> map(Activity t) {

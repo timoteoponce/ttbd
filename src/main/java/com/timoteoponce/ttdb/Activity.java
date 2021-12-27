@@ -4,14 +4,22 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An Activity is the main data structure for the application, it uses the
+ * 'title' as ident and provides a simple approach for keeping track and
+ * filtering logs based on date and registered hours.
+ * 
+ * @author timoteo
+ *
+ */
 public class Activity {
 
 	private String title;
 	private List<ActivityLog> log = new ArrayList<>();
 
-	public Activity() {	
+	public Activity() {
 	}
-	
+
 	public Activity(String title) {
 		this.title = title;
 	}
@@ -41,7 +49,5 @@ public class Activity {
 	public void setLog(List<ActivityLog> log) {
 		this.log = log;
 	}
-	
-	
 
 }
